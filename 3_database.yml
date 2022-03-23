@@ -1,0 +1,87 @@
+Description: >
+    set up servers
+    
+Parameters:
+  EnvironmentName:
+      Description: An environment name that will be prefixed to resource names
+      Type: String
+  DBPass:
+      Type: String
+      Default: "admin123"
+
+Resources:
+  DB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: 20
+      BackupRetentionPeriod: 0 # default: 1
+      CopyTagsToSnapshot: true # default: false
+      DBInstanceClass: db.t2.micro
+      DBInstanceIdentifier: usermanagerdb
+      DBName: 'UserManagerDB'
+      DBSubnetGroupName: 'DBSubnetGroup'
+      Engine: 'mysql'
+      EngineVersion: '8.0.20'
+      LicenseModel: 'general-public-license'
+      MasterUsername: 'admin'
+      MasterUserPassword: !Ref DBPass
+      MaxAllocatedStorage: 1000
+      MultiAZ: true
+      PubliclyAccessible: false
+      StorageType: gp2
+      VPCSecurityGroups:
+        - Ref: DBSecurityGroup
+
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: "DBSubnetGroup for RDS MySql instance"
+      DBSubnetGroupName: DBSubnetGroup
+      SubnetIds:
+        - Fn::ImportValue:
+            Fn::Sub: "${EnvironmentName}-PRI1-SN"
+        - Fn::ImportValue:
+            Fn::Sub: "${EnvironmentName}-PRI2-SN"
+
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'DB security group'
+      GroupName: 'UserManagerDBSg'
+      SecurityGroupIngress:
+        - SourceSecurityGroupId: !Ref ServerSecurityGroup
+          IpProtocol: TCP
+          FromPort: 3306
+          ToPort: 3306
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0'
+          IpProtocol: -1 # Allow all
+      Tags:
+        - Key: 'Name'
+          Value: 'UserManagerDBSg'
+      VpcId:
+        Fn::ImportValue:
+          Fn::Sub: "${EnvironmentName}-VPCID"
+
+
+  ServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http to our hosts and SSH from local only
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-VPCID"
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 0.0.0.0/0
