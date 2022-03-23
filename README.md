@@ -2,10 +2,13 @@
 ## Description:
 
 ### Network template deploys the below:
-1. A VPC
-2. 2 public subnets and 2 private subnets spread across two Availabilty Zones.
-3. An Internet Gateway, with a default route on the public subnets. 
-4. 2 NAT Gateways in each of the public subnets(one in each AZ), and default routes for them in the private subnets.
+1. VPC
+2. Subnet: 2 public subnets and 2 private subnets spread across two Availabilty Zones.
+3. InternetGateway: An Internet Gateway, with a default route on the public subnets. 
+4. VPCGatewayAttachment: attachs the internet gateway to the VPC
+5. NATGateway: 2 NAT Gateways in each of the public subnets(one in each AZ), and default routes for them in the private subnets.
+6. EIP: 2 EIPs and attach each of them to a NatGateway.
+7. RouteTable, Route, and SubnetRouteTableAssociation: specifies a route table for a specified VPC. routes are added to route tables and then the route tables are associated with subnets.
 
 ### Servers template deploys the below:
 1. SecurityGroup: One security group for created web server EC2 instances and another for the load balancer. Web servers security group opens ports 80 and 22 (inbound) and all ports (outbound). Load balancer security group opens ports 80 (inbound and outbound).
@@ -53,7 +56,7 @@
                   Value: !Ref EnvironmentName 
 ```
 
-3. VPCGatewayAttachment: attachs the internet gateway to the VPC
+3. VPCGatewayAttachment: attachs the internet gateway to the VPC.
 ```
     InternetGatewayAttachment:
         Type: AWS::EC2::VPCGatewayAttachment
