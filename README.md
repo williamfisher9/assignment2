@@ -392,4 +392,114 @@
 ```
 
 ## Database servers template:
-### Option 1: Using RDS. The template deploys the below:
+### Option 1: 
+### Using RDS. This template will deploy a multi availability zone MySQL communciaty edition database server. One of the databases will act as a primary server and the pther will be a secondary server.
+1. DBInstance
+2. DBSubnetGroup
+3. SecurityGroup
+
+### RDS Parameters:
+1. EnvironmentName: a name prefixed to created resources.
+2. DBPass: admin user password "admin123"
+
+### RDS template resources:
+1. DBInstance: 
+    * AllocatedStorage: sets storage size to the database server.
+    * BackupRetentionPeriod: The number of days for which automated backups are retained. Setting this parameter to a positive number enables backups. Setting this parameter to 0 disables automated backups.
+    * CopyTagsToSnapshot: A value that indicates whether to copy tags from the DB instance to snapshots of the DB instance. By default, tags are not copied.
+    * DBInstanceClass: type of instance
+    * DBInstanceIdentifier: A name for the DB instance. If you specify a name, AWS CloudFormation converts it to lowercase.
+    * DBName: The name of the database to create when the DB instance is created.
+    * DBSubnetGroupName: A DB subnet group to associate with the DB instance. 
+    * Engin: DB engine type.
+    * EngineVersion: DB engine version.
+    * LicenseModel: DB engine licence model.
+    * MasterUsername: DB admin user username.
+    * MasterUserPassword: DB admin user password.
+    * MaxAllocatedStorage: The upper limit in gibibytes (GiB) to which Amazon RDS can automatically scale the storage of the DB instance.
+    * MultiAZ: Specifies whether the database instance is a Multi-AZ DB instance deployment. You can't set the AvailabilityZone parameter if the MultiAZ parameter is set to true.
+    * PubliclyAccessible: Indicates whether the DB instance is an internet-facing instance. 
+    * StorageType: Type of storage assigned to the DB instance.
+    * VPCSecurityGroups: A list of the VPC security group IDs to assign to the DB instance.
+```
+  DB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: 20
+      BackupRetentionPeriod: 0
+      CopyTagsToSnapshot: true # default: false
+      DBInstanceClass: db.t2.micro
+      DBInstanceIdentifier: instalikedb
+      DBName: 'InstaLikeDb'
+      DBSubnetGroupName: 'DBSubnetGroup'
+      Engine: 'mysql'
+      EngineVersion: '8.0.20'
+      LicenseModel: 'general-public-license'
+      MasterUsername: 'admin'
+      MasterUserPassword: !Ref DBPass
+      MaxAllocatedStorage: 100
+      MultiAZ: true
+      PubliclyAccessible: false
+      StorageType: gp2
+      VPCSecurityGroups:
+        - Ref: DBSecurityGroup
+```
+
+2. DBSubnetGroup:
+```
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: "DBSubnetGroup for RDS MySql instance"
+      DBSubnetGroupName: DBSubnetGroup
+      SubnetIds:
+        - Fn::ImportValue:
+            Fn::Sub: "${EnvironmentName}-PRI1-SN"
+        - Fn::ImportValue:
+            Fn::Sub: "${EnvironmentName}-PRI2-SN"
+```
+
+3. SecurityGroup:
+```
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'DB security group'
+      GroupName: 'UserManagerDBSg'
+      SecurityGroupIngress:
+        - SourceSecurityGroupId: !Ref ServerSecurityGroup
+          IpProtocol: TCP
+          FromPort: 3306
+          ToPort: 3306
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0'
+          IpProtocol: -1 # Allow all
+      Tags:
+        - Key: 'Name'
+          Value: 'UserManagerDBSg'
+      VpcId:
+        Fn::ImportValue:
+          Fn::Sub: "${EnvironmentName}-VPCID"
+
+  ServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http to our hosts and SSH from local only
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-VPCID"
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 0.0.0.0/0
+```
