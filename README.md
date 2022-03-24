@@ -44,6 +44,7 @@
                 - Key: Name
                   Value: !Ref EnvironmentName 
 ```
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/003.jpg)
 
 3. VPCGatewayAttachment: attachs the internet gateway to the VPC.
 ```
