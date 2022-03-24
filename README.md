@@ -35,7 +35,7 @@
 ![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/002.jpg)
 
 
-2. InternetGateway and VPCGatewayAttachment: attachs the internet gateway to the VPC.
+2. InternetGateway and VPCGatewayAttachment: creates an internet gateway and attachs it to the VPC.
 ```
     InternetGateway:
         Type: AWS::EC2::InternetGateway
@@ -51,7 +51,8 @@
 ```
 ![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/003.jpg)
 
-4. Subnet: creates a subnet, then assigns it to the VPC and the availability zone. MapPublicIpOnLaunch Indicates whether instances launched in this subnet receive a public IPv4 address
+3. Subnet: creates a subnet, then assigns it to the VPC and the availability zone. 
+    * MapPublicIpOnLaunch: Indicates whether instances launched in this subnet receive a public IPv4 address
 ```
     PublicSubnet1: 
         Type: AWS::EC2::Subnet
@@ -95,7 +96,7 @@
                   Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
 ```
 
-5. EIP: creates elastic IP address. DependsOn attribute you can specify that the creation of a specific resource follows another. Domain indicates whether the Elastic IP address is for use with instances in a VPC or instance in EC2-Classic.
+4. EIP: creates elastic IP address. DependsOn attribute you can specify that the creation of a specific resource follows another. Domain indicates whether the Elastic IP address is for use with instances in a VPC or instance in EC2-Classic.
 ```
     NatGateway1EIP:
         Type: AWS::EC2::EIP
@@ -109,7 +110,7 @@
             Domain: vpc
 ```
 
-6. NatGateway: creates NAT Gateways and assign them to public subnets and then assign created Elastic IP addresses to them.
+5. NatGateway: creates NAT Gateways and assign them to public subnets and then assign created Elastic IP addresses to them.
 ```
     NatGateway1: 
         Type: AWS::EC2::NatGateway
@@ -123,7 +124,7 @@
             SubnetId: !Ref PublicSubnet2
 ```
 
-7. RouteTable, Route and SubnetRouteTableAssociation: specifies a route table for a specified VPC. After you create a route table, you can add routes and associate the table with a subnet.
+6. RouteTable, Route and SubnetRouteTableAssociation: specifies a route table for a specified VPC. After you create a route table, you can add routes and associate the table with a subnet.
 ```
     PublicRouteTable:
         Type: AWS::EC2::RouteTable
