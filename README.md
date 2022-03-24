@@ -35,7 +35,7 @@
 ![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/002.jpg)
 
 
-2. InternetGateway
+2. InternetGateway and VPCGatewayAttachment: attachs the internet gateway to the VPC.
 ```
     InternetGateway:
         Type: AWS::EC2::InternetGateway
@@ -43,17 +43,13 @@
             Tags:
                 - Key: Name
                   Value: !Ref EnvironmentName 
-```
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/003.jpg)
-
-3. VPCGatewayAttachment: attachs the internet gateway to the VPC.
-```
     InternetGatewayAttachment:
         Type: AWS::EC2::VPCGatewayAttachment
         Properties:
             InternetGatewayId: !Ref InternetGateway
             VpcId: !Ref VPC
 ```
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/003.jpg)
 
 4. Subnet: creates a subnet, then assigns it to the VPC and the availability zone. MapPublicIpOnLaunch Indicates whether instances launched in this subnet receive a public IPv4 address
 ```
