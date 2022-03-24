@@ -10,7 +10,7 @@
 6. EIP: 2 EIPs and attach each of them to a NatGateway.
 7. RouteTable, Route, and SubnetRouteTableAssociation: specifies a route table for a specified VPC. routes are added to route tables and then the route tables are associated with subnets.
 
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/001.JPG)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0001.JPG)
 
 ### Parameters:
 1. EnvironmentName: A name prefixed to created resources.
@@ -32,7 +32,7 @@
                 - Key: Name 
                   Value: !Ref EnvironmentName
 ```
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/002.jpg)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0002.jpg)
 
 2. InternetGateway and VPCGatewayAttachment: creates an internet gateway and attachs it to the VPC.
 ```
@@ -48,7 +48,7 @@
             InternetGatewayId: !Ref InternetGateway
             VpcId: !Ref VPC
 ```
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/003.jpg)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0003.jpg)
 
 3. Subnet: creates a subnet, then assigns it to the VPC and the availability zone. 
     * MapPublicIpOnLaunch: Indicates whether instances launched in this subnet receive a public IPv4 address
@@ -94,7 +94,7 @@
                 - Key: Name 
                   Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
 ```
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/004.jpg)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0004.jpg)
 
 4. EIP: creates elastic IP address for each subnet. 
     * DependsOn: attribute you can specify that the creation of a specific resource follows another. 
@@ -111,7 +111,7 @@
         Properties:
             Domain: vpc
 ```
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/005.jpg)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0005.jpg)
 
 5. NatGateway: creates NAT Gateways and assigns them to public subnets and then assigns created Elastic IP addresses to them.
 ```
@@ -126,7 +126,7 @@
             AllocationId: !GetAtt NatGateway2EIP.AllocationId
             SubnetId: !Ref PublicSubnet2
 ```
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/006.jpg)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0006.jpg)
 
 6. RouteTable, Route and SubnetRouteTableAssociation: specifies a route table for a specified VPC. After you create a route table, you can add routes and associate the table with a subnet.
 ```
@@ -191,7 +191,7 @@
             RouteTableId: !Ref PrivateRouteTable2
             SubnetId: !Ref PrivateSubnet2
 ```
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/007.jpg)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0007.jpg)
 
 ### The network template outputs references to the below resources. Each output has a name and a value:
 ```
@@ -340,7 +340,7 @@
         ListenerArn: !Ref 'Listener'
         Priority: 1
 ```
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/008.jpg)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0008.jpg)
 
 3. LaunchConfiguration:
 ```
@@ -380,7 +380,7 @@
       TargetGroupARNs:
       - Ref: WebAppTargetGroup
 ```
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/009.jpg)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0009.jpg)
 
 5. TargetGroup:
 ```
@@ -411,7 +411,7 @@
 1. EnvironmentName: a name prefixed to created resources.
 2. DBPass: admin user password "admin123"
 
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/001.JPG)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0001.JPG)
 
 ### Option 1 Resources:
 1. DBInstance: 
@@ -527,7 +527,7 @@
 4. KeyName: The name of the private key pem file.
 5. AMItoUse: ID of the AMI image.
 
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/001.JPG)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment2_screenshots/0001.JPG)
 
 ### Option 2 Resources:
 1. SecurityGroup:
