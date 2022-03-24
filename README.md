@@ -191,6 +191,7 @@
             RouteTableId: !Ref PrivateRouteTable2
             SubnetId: !Ref PrivateSubnet2
 ```
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/007.jpg)
 
 ### The network template outputs references to the below resources. Each output has a name and a value:
 ```
