@@ -10,7 +10,7 @@
 6. EIP: 2 EIPs and attach each of them to a NatGateway.
 7. RouteTable, Route, and SubnetRouteTableAssociation: specifies a route table for a specified VPC. routes are added to route tables and then the route tables are associated with subnets.
 
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/001.png)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/001.JPG)
 
 ### Parameters:
 1. EnvironmentName: A name prefixed to created resources.
