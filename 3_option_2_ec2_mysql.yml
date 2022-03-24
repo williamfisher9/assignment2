@@ -1,0 +1,94 @@
+Parameters:
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+    KeyName:
+        Description: Name of an existing EC2 KeyPair to enable SSH access to the instances
+        Type: 'AWS::EC2::KeyPair::KeyName'
+        ConstraintDescription: must be the name of an existing EC2 KeyPair.
+    AMItoUse:
+        Description: AMI to use for our base image
+        Type: String
+    DbMasterUsername:
+        Description: The datbaase master user name
+        Type: String
+        Default: admin
+    DbMasterPassword:
+        Description: The database master password
+        Type: String
+        Default: "admin123"
+
+Resources:
+  DbSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: MySQL security group
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-VPCID"
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${EnvironmentName} DbSecurityGroup
+
+  DbInstance1:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: !Ref KeyName
+      ImageId: !Ref AMItoUse
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - !GetAtt DbSecurityGroup.GroupId
+      SubnetId:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-PRI1-SN"
+      UserData: 
+        Fn::Base64: !Sub |
+          #!/bin/bash -ex
+          sudo su
+          yum localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+          yum install -y mysql-community-server
+          systemctl enable mysqld
+          systemctl start mysqld
+          mysql -u root "-p$(grep -oP '(?<=root@localhost\: )\S+' /var/log/mysqld.log)" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DbMasterPassword}'" --connect-expired-password
+          mysql -u root "-p${DbMasterPassword}" -e "CREATE USER '${DbMasterUsername}'@'%' IDENTIFIED BY '${DbMasterPassword}'"
+          mysql -u root "-p${DbMasterPassword}" -e "GRANT ALL PRIVILEGES ON *.* TO '${DbMasterUsername}'@'%'"
+          mysql -u root "-p${DbMasterPassword}" -e "FLUSH PRIVILEGES"
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${EnvironmentName} DB Instance 1
+
+  DbInstance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: !Ref KeyName
+      ImageId: !Ref AMItoUse
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - !GetAtt DbSecurityGroup.GroupId
+      SubnetId:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-PRI2-SN"
+      UserData: 
+        Fn::Base64: !Sub |
+          #!/bin/bash -ex
+          sudo su
+          yum localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+          yum install -y mysql-community-server
+          systemctl enable mysqld
+          systemctl start mysqld
+          mysql -u root "-p$(grep -oP '(?<=root@localhost\: )\S+' /var/log/mysqld.log)" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DbMasterPassword}'" --connect-expired-password
+          mysql -u root "-p${DbMasterPassword}" -e "CREATE USER '${DbMasterUsername}'@'%' IDENTIFIED BY '${DbMasterPassword}'"
+          mysql -u root "-p${DbMasterPassword}" -e "GRANT ALL PRIVILEGES ON *.* TO '${DbMasterUsername}'@'%'"
+          mysql -u root "-p${DbMasterPassword}" -e "FLUSH PRIVILEGES"
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${EnvironmentName} DB Instance 2

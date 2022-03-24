@@ -11,7 +11,7 @@
 7. RouteTable, Route, and SubnetRouteTableAssociation: specifies a route table for a specified VPC. routes are added to route tables and then the route tables are associated with subnets.
 
 ### Network template parameters:
-1. EnvironmentName: a name prefixed to created resources.
+1. EnvironmentName: A name prefixed to created resources.
 2. VpcCIDR: IP range for the VPC
 3. PublicSubnet1CIDR: IP range for the first public subnet
 4. PublicSubnet2CIDR: IP range for the second public subnet
@@ -253,7 +253,7 @@
 
 
 ### Servers template parameters:
-1. EnvironmentName: a name prefixed to created resources.
+1. EnvironmentName: A name prefixed to created resources.
 2. KeyName: The name of the private key pem file
 3. AMItoUse: ID of the AMI image
 
@@ -393,7 +393,7 @@
 
 ## Database servers template:
 ### Option 1: 
-### Using RDS. This template will deploy a multi availability zone MySQL communciaty edition database server. One of the databases will act as a primary server and the pther will be a secondary server.
+### Using RDS. This template deploys a multi availability zone MySQL community edition database server. One of the databases will act as a primary server and the other will be a secondary server.
 1. DBInstance
 2. DBSubnetGroup
 3. SecurityGroup
@@ -505,11 +505,96 @@
 ```
 
 ### Option 2: 
-### Using Ubuntu EC2 instances. This template will deploy 2 ubuntu instance (one in each private subnet) and then configuring MySQL communciaty edition database server on each of them.
-1. 
+### Using Ubuntu EC2 instances. This template will deploy 2 ubuntu instance (one in each private subnet) and then configuring MySQL communciaty edition database server on each of them:
+1. Instance: Creates 2 EC2 instances (one in each private network).
+2. SecurityGroup: Opens port 3306 for both instances.
 
 ### Option2 parameters:
-1. EnvironmentName: a name prefixed to created resources.
-2. DBPass: admin user password "admin123"
+1. EnvironmentName: A name prefixed to created resources.
+2. DbMasterUsername: Admin user username.
+3. DbMasterPassword: Admin user password "admin123".
+4. KeyName: The name of the private key pem file.
+5. AMItoUse: ID of the AMI image.
 
 ### Option 2 template resources:
+1. SecurityGroup:
+```
+  DbSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: MySQL security group
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-VPCID"
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${EnvironmentName} DbSecurityGroup
+```
+
+2. Instance:
+```
+  DbInstance1:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: !Ref KeyName
+      ImageId: !Ref AMItoUse
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - !GetAtt DbSecurityGroup.GroupId
+      SubnetId:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-PRI1-SN"
+      UserData: 
+        Fn::Base64: !Sub |
+          #!/bin/bash -ex
+          sudo su
+          yum localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+          yum install -y mysql-community-server
+          systemctl enable mysqld
+          systemctl start mysqld
+          mysql -u root "-p$(grep -oP '(?<=root@localhost\: )\S+' /var/log/mysqld.log)" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DbMasterPassword}'" --connect-expired-password
+          mysql -u root "-p${DbMasterPassword}" -e "CREATE USER '${DbMasterUsername}'@'%' IDENTIFIED BY '${DbMasterPassword}'"
+          mysql -u root "-p${DbMasterPassword}" -e "GRANT ALL PRIVILEGES ON *.* TO '${DbMasterUsername}'@'%'"
+          mysql -u root "-p${DbMasterPassword}" -e "FLUSH PRIVILEGES"
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${EnvironmentName} DB Instance 1
+
+  DbInstance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: !Ref KeyName
+      ImageId: !Ref AMItoUse
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - !GetAtt DbSecurityGroup.GroupId
+      SubnetId:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-PRI2-SN"
+      UserData: 
+        Fn::Base64: !Sub |
+          #!/bin/bash -ex
+          sudo su
+          yum localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+          yum install -y mysql-community-server
+          systemctl enable mysqld
+          systemctl start mysqld
+          mysql -u root "-p$(grep -oP '(?<=root@localhost\: )\S+' /var/log/mysqld.log)" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DbMasterPassword}'" --connect-expired-password
+          mysql -u root "-p${DbMasterPassword}" -e "CREATE USER '${DbMasterUsername}'@'%' IDENTIFIED BY '${DbMasterPassword}'"
+          mysql -u root "-p${DbMasterPassword}" -e "GRANT ALL PRIVILEGES ON *.* TO '${DbMasterUsername}'@'%'"
+          mysql -u root "-p${DbMasterPassword}" -e "FLUSH PRIVILEGES"
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${EnvironmentName} DB Instance 2
+```
+
+## Diagrams:
