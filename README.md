@@ -1,6 +1,6 @@
 # assignment2
 
-## Network template:
+## Network Template:
 ### Network template deploys the below:
 1. VPC
 2. Subnet: 2 public subnets and 2 private subnets spread across two Availabilty Zones.
@@ -10,7 +10,7 @@
 6. EIP: 2 EIPs and attach each of them to a NatGateway.
 7. RouteTable, Route, and SubnetRouteTableAssociation: specifies a route table for a specified VPC. routes are added to route tables and then the route tables are associated with subnets.
 
-### Network template parameters:
+### Parameters:
 1. EnvironmentName: A name prefixed to created resources.
 2. VpcCIDR: IP range for the VPC
 3. PublicSubnet1CIDR: IP range for the first public subnet
@@ -18,7 +18,7 @@
 5. PrivateSubnet1CIDR: IP range for the first private subnet
 6. PrivateSubnet2CIDR: IP range for the second private subnet
 
-### Network template resources:
+### Resources:
 1. VPC: 
 ```
     VPC: 
@@ -241,8 +241,8 @@
           
 ```
 
-## Server template:
-### Servers template deploys the below:
+## Web Servers Template:
+### Web servers template deploys the below:
 1. SecurityGroup: One security group for created web server EC2 instances and another for the load balancer. Web servers security group opens ports 80 and 22 (inbound) and all ports (outbound). Load balancer security group opens ports 80 (inbound and outbound).
 2. LaunchConfiguration: Configurations of created EC2 instances including AMI image to be used, assigned security group, storage type and size, instance type, and user data.
 3. AutoScalingGroup: attachs launch configuration, private subnets group, minimum desirable number of instances and maximum desirable number of instances. In addition to the load balancer TargetGroup.
@@ -252,12 +252,12 @@
 7. ListenerRule: Creates a rule that consists of an action (forward), priority and a condition and assign it to the listener of the load balancer.
 
 
-### Servers template parameters:
+### Parameters:
 1. EnvironmentName: A name prefixed to created resources.
 2. KeyName: The name of the private key pem file
 3. AMItoUse: ID of the AMI image
 
-### Servers template resources:
+### Resources:
 1. SecurityGroup: 
 ```
   WebServerSecGroup:
@@ -391,18 +391,18 @@
       - Ref: WebAppTargetGroup
 ```
 
-## Database servers template:
-### Option 1: 
-### Using RDS. This template deploys a multi availability zone MySQL community edition database server. One of the databases will act as a primary server and the other will be a secondary server.
+## Database Servers Template:
+### Option 1 (using RDS): 
+### This template deploys a multi availability zone MySQL community edition database server. One of the databases will act as a primary server and the other will be a secondary server.
 1. DBInstance
 2. DBSubnetGroup
 3. SecurityGroup
 
-### RDS Parameters:
+### Option 1 Parameters:
 1. EnvironmentName: a name prefixed to created resources.
 2. DBPass: admin user password "admin123"
 
-### RDS template resources:
+### Option 1 Resources:
 1. DBInstance: 
     * AllocatedStorage: sets storage size to the database server.
     * BackupRetentionPeriod: The number of days for which automated backups are retained. Setting this parameter to a positive number enables backups. Setting this parameter to 0 disables automated backups.
@@ -504,19 +504,19 @@
         CidrIp: 0.0.0.0/0
 ```
 
-### Option 2: 
-### Using Ubuntu EC2 instances. This template will deploy 2 ubuntu instance (one in each private subnet) and then configuring MySQL communciaty edition database server on each of them:
+### Option 2 (using Ubuntu EC2 instances):
+### This template will deploy 2 ubuntu instance (one in each private subnet) and then configuring MySQL communciaty edition database server on each of them:
 1. Instance: Creates 2 EC2 instances (one in each private network).
 2. SecurityGroup: Opens port 3306 for both instances.
 
-### Option2 parameters:
+### Option 2 Parameters:
 1. EnvironmentName: A name prefixed to created resources.
 2. DbMasterUsername: Admin user username.
 3. DbMasterPassword: Admin user password "admin123".
 4. KeyName: The name of the private key pem file.
 5. AMItoUse: ID of the AMI image.
 
-### Option 2 template resources:
+### Option 2 Resources:
 1. SecurityGroup:
 ```
   DbSecurityGroup:
