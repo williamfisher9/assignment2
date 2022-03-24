@@ -597,4 +597,21 @@
           Value: !Sub ${EnvironmentName} DB Instance 2
 ```
 
+## To create the stacks on AWS:
+1. Run the below shell script and feed in the stack name, YAML file name and parameters file name for each template:
+```
+#!/bin/bash
+aws cloudformation create-stack \
+--stack-name $1 \
+--template-body file://$2 \
+--parameters file://$3
+```
+
+2. Run the below commands using AWS CLI:
+```
+aws cloudformation create-stack --stack-name stack-network --template-body file://1_network.yml --parameters file://1_network_params.json
+aws cloudformation create-stack --stack-name stack-apps --template-body file://2_servers.yml --parameters file://2_servers_params.json
+aws cloudformation create-stack --stack-name stack-db --template-body file://3_option_2_ec2_mysql.yml --parameters file://3_option_2_ec2_mysql_params.json
+```
+
 ## Diagrams:
