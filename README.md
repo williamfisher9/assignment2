@@ -95,6 +95,7 @@
                 - Key: Name 
                   Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
 ```
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/004.jpg)
 
 4. EIP: creates elastic IP address. DependsOn attribute you can specify that the creation of a specific resource follows another. Domain indicates whether the Elastic IP address is for use with instances in a VPC or instance in EC2-Classic.
 ```
