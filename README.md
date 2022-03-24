@@ -411,6 +411,8 @@
 1. EnvironmentName: a name prefixed to created resources.
 2. DBPass: admin user password "admin123"
 
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/001.JPG)
+
 ### Option 1 Resources:
 1. DBInstance: 
     * AllocatedStorage: sets storage size to the database server.
@@ -524,6 +526,8 @@
 3. DbMasterPassword: Admin user password "admin123".
 4. KeyName: The name of the private key pem file.
 5. AMItoUse: ID of the AMI image.
+
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/001.JPG)
 
 ### Option 2 Resources:
 1. SecurityGroup:
