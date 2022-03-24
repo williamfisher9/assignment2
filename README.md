@@ -32,7 +32,7 @@
                 - Key: Name 
                   Value: !Ref EnvironmentName
 ```
-![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/002.JPG)
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/002.jpg)
 
 
 2. InternetGateway
