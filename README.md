@@ -503,3 +503,13 @@
         ToPort: 65535
         CidrIp: 0.0.0.0/0
 ```
+
+### Option 2: 
+### Using Ubuntu EC2 instances. This template will deploy 2 ubuntu instance (one in each private subnet) and then configuring MySQL communciaty edition database server on each of them.
+1. 
+
+### Option2 parameters:
+1. EnvironmentName: a name prefixed to created resources.
+2. DBPass: admin user password "admin123"
+
+### Option 2 template resources:
