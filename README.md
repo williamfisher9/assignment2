@@ -340,26 +340,9 @@
         ListenerArn: !Ref 'Listener'
         Priority: 1
 ```
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/008.jpg)
 
-3. TargetGroup:
-```
-  WebAppTargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      HealthCheckIntervalSeconds: 10
-      HealthCheckPath: /
-      HealthCheckProtocol: HTTP
-      HealthCheckTimeoutSeconds: 8
-      HealthyThresholdCount: 2
-      Port: 80
-      Protocol: HTTP
-      UnhealthyThresholdCount: 5
-      VpcId: 
-        Fn::ImportValue:
-          Fn::Sub: "${EnvironmentName}-VPCID"
-```
-
-4. LaunchConfiguration:
+3. LaunchConfiguration:
 ```
   WebAppLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
@@ -382,7 +365,7 @@
           VolumeSize: '10'
 ```
 
-5. AutoScalingGroup:
+4. AutoScalingGroup:
 ```
   WebAppGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -396,6 +379,25 @@
       MaxSize: '5'
       TargetGroupARNs:
       - Ref: WebAppTargetGroup
+```
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/009.jpg)
+
+5. TargetGroup:
+```
+  WebAppTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 8
+      HealthyThresholdCount: 2
+      Port: 80
+      Protocol: HTTP
+      UnhealthyThresholdCount: 5
+      VpcId: 
+        Fn::ImportValue:
+          Fn::Sub: "${EnvironmentName}-VPCID"
 ```
 
 ## Database Servers Template:
