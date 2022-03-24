@@ -33,7 +33,7 @@
                   Value: !Ref EnvironmentName
 ```
 ![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/002.jpg)
-              
+
 2. InternetGateway and VPCGatewayAttachment: creates an internet gateway and attachs it to the VPC.
 ```
     InternetGateway:
@@ -96,7 +96,9 @@
 ```
 ![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/004.jpg)
 
-4. EIP: creates elastic IP address. DependsOn attribute you can specify that the creation of a specific resource follows another. Domain indicates whether the Elastic IP address is for use with instances in a VPC or instance in EC2-Classic.
+4. EIP: creates elastic IP address for each subnet. 
+    * DependsOn: attribute you can specify that the creation of a specific resource follows another. 
+    * Domain: indicates whether the Elastic IP address is for use with instances in a VPC or instance in EC2-Classic.
 ```
     NatGateway1EIP:
         Type: AWS::EC2::EIP
@@ -109,8 +111,9 @@
         Properties:
             Domain: vpc
 ```
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/005.jpg)
 
-5. NatGateway: creates NAT Gateways and assign them to public subnets and then assign created Elastic IP addresses to them.
+5. NatGateway: creates NAT Gateways and assigns them to public subnets and then assigns created Elastic IP addresses to them.
 ```
     NatGateway1: 
         Type: AWS::EC2::NatGateway
@@ -123,6 +126,7 @@
             AllocationId: !GetAtt NatGateway2EIP.AllocationId
             SubnetId: !Ref PublicSubnet2
 ```
+![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/006.jpg)
 
 6. RouteTable, Route and SubnetRouteTableAssociation: specifies a route table for a specified VPC. After you create a route table, you can add routes and associate the table with a subnet.
 ```
