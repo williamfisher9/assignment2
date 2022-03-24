@@ -33,8 +33,7 @@
                   Value: !Ref EnvironmentName
 ```
 ![ScreenShot](https://william-fisher-github-screenshots.s3.amazonaws.com/assignment1_screenshots/assignment2/002.jpg)
-
-
+              
 2. InternetGateway and VPCGatewayAttachment: creates an internet gateway and attachs it to the VPC.
 ```
     InternetGateway:
