@@ -3,12 +3,12 @@
 		"ParameterKey": "EnvironmentName",
 		"ParameterValue": "Assignment2Project"
 	},
-    {
-        "ParameterKey": "KeyName",
-        "ParameterValue": "web-tech-key"
-    },
-    {
-        "ParameterKey": "AMItoUse",
-        "ParameterValue": "ami-0c02fb55956c7d316"
-    }
+	{
+        	"ParameterKey": "KeyName",
+        	"ParameterValue": "web-tech-key"
+	},
+	{
+        	"ParameterKey": "AMItoUse",
+        	"ParameterValue": "ami-0c02fb55956c7d316"
+	}
 ]
