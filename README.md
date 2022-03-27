@@ -620,7 +620,7 @@ aws cloudformation create-stack \
 --parameters file://$3
 ```
 
-2. Run the below commands using AWS CLI:
+2. Alternatively, you can run the below commands using AWS CLI:
 ```
 aws cloudformation create-stack --stack-name stack-network --template-body file://1_network.yml --parameters file://1_network_params.json
 aws cloudformation create-stack --stack-name stack-apps --template-body file://2_servers.yml --parameters file://2_servers_params.json
